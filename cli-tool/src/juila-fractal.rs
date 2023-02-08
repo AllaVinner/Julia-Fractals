@@ -36,22 +36,7 @@ fn julia_iterations(initial_z: Complex, constant_z: Complex, max_iterations: usi
     i
 }
 
-fn pixel_fn(width_fraction: f32, height_fraction: f32) -> u8 {
 
-}
-
-fn create_image_from_pixel_fn(
-    image_width: Pixels, 
-    image_height: Pixels, 
-    pixel_fn : fn(Pixels, Pixels) -> image::Rgb)
-    -> image::ImageBuffer {
-        let mut imgbuf = image::ImageBuffer::new(image_width, image_height);
-        for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
-            let r = (255.5/config.width as f32 * x as f32) as u8;
-            *pixel = pixel_fn( x as f32 / width as f32, y as f32 / height as f32);
-        }
-        imgbuf
-}
 
 fn julia_fractal(c_re: Number, c_im: Number, config: GridImageConfiguration, save_path: PathBuf) {
     let c = num_complex::Complex::new(c_re, c_im);
