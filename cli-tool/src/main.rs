@@ -28,8 +28,8 @@ struct GridCoordinate {
 
 fn pixel_to_grid_coordinate(pixel: &PixelCoordinate, image_config: &ImageConfig, grid_config: &GridConfig) -> GridCoordinate {
     GridCoordinate { 
-        x: pixel.width as Real * (grid_config.x_max - grid_config.x_min)/ image_config.width as Real + grid_config.x_min,
-        y: pixel.height as Real * (grid_config.y_min - grid_config.y_max)/ image_config.height as Real + grid_config.y_max,
+        x: (pixel.width as Real) * (grid_config.x_max - grid_config.x_min) / (image_config.width as Real) + grid_config.x_min,
+        y: (pixel.height as Real) * (grid_config.y_min - grid_config.y_max)/ (image_config.height as Real) + grid_config.y_max,
     }
 }
 
@@ -50,12 +50,13 @@ fn main() {
     let heigh = 600;
     let grid_config = GridConfig { x_min: -3., x_max: 3., y_min: -3.0, y_max: 3.};
     let image_config = ImageConfig { width: 800, height: 800 };
-    let constant_z = Complex::<Real>::new(-0.23, 0.5);
+    let constant_z = Complex::<Real>::new(-0., 0.);
+    let max_iterations = 100;
 
-    let img = image::ImageBuffer::from_fn(512, 512, |w, h| {
+    let img = image::ImageBuffer::from_fn(image_config.width as u32, image_config.height as u32, |w, h| {
         let grid_coordinate = pixel_to_grid_coordinate(&PixelCoordinate { width: w as usize, height: h as usize}, &image_config, &grid_config);
-        let initial_z = Complex::<Real>::new(grid_coordinate.x, grid_coordinate.y);
-        let value = julia_iterations(initial_z, constant_z, 20);
+        let initial_z = Complex::<Real>::new( grid_coordinate.x, grid_coordinate.y);
+        let value = julia_iterations(initial_z, constant_z, max_iterations);
         image::Rgb([0, 0, 10*value as u8])
     });
     img.save("pic.png").unwrap();
