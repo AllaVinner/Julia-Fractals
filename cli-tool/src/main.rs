@@ -1,5 +1,6 @@
 use image;
 use num_complex::Complex;
+mod julia_fractal;
 
 type Real = f32;
 
@@ -33,31 +34,25 @@ fn pixel_to_grid_coordinate(pixel: &PixelCoordinate, image_config: &ImageConfig,
     }
 }
 
-fn julia_iterations(initial_z: Complex<Real>, constant_z: Complex<Real>, max_iterations: usize) -> usize {
-    let mut i: usize = 0;
-    let mut z = initial_z;
-    let c = constant_z;
-
-    while i < max_iterations && z.norm() <= 2.0 {
-        z = z * z + c;
-        i += 1;
-    }
-    i
-}
 
 fn main() {
-    let width = 400;
-    let heigh = 600;
-    let grid_config = GridConfig { x_min: -3., x_max: 3., y_min: -3.0, y_max: 3.};
+    let grid_config = GridConfig { x_min: -2., x_max: 2., y_min: -2.0, y_max: 2.};
     let image_config = ImageConfig { width: 800, height: 800 };
-    let constant_z = Complex::<Real>::new(-0., 0.);
-    let max_iterations = 100;
+    let constant_z = Complex::<Real>::new(-0.6, 0.2);
+    let max_iterations = 50;
+    let p = 2.;
+    let iter_to_u8 = |i: usize| -> u8 {
+        ((1.0 -(1.-(i as f32 / max_iterations as f32)).powf(p)).powf(1./p)*255.5) as u8
+    };
 
     let img = image::ImageBuffer::from_fn(image_config.width as u32, image_config.height as u32, |w, h| {
         let grid_coordinate = pixel_to_grid_coordinate(&PixelCoordinate { width: w as usize, height: h as usize}, &image_config, &grid_config);
         let initial_z = Complex::<Real>::new( grid_coordinate.x, grid_coordinate.y);
-        let value = julia_iterations(initial_z, constant_z, max_iterations);
-        image::Rgb([0, 0, 10*value as u8])
+        let value = julia_fractal::julia_iterations(initial_z, constant_z, max_iterations);
+        let g = iter_to_u8(value);
+        let r = (w as f32 / image_config.width as f32 * 255.5) as u8;
+        let b = (h as f32 / image_config.height as f32 * 255.5) as u8;
+        image::Rgb([r, g, b])
     });
     img.save("pic.png").unwrap();
 }
