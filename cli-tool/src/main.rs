@@ -1,11 +1,10 @@
 use image;
 use num_complex::Complex;
 mod julia_fractal;
-
-type Real = julia_fractal::Real;
-
 use clap::Parser;
 use std::string::String;
+
+type Real = julia_fractal::Real;
 
 struct GridConfig {
     x_min: Real,
@@ -95,6 +94,6 @@ fn main() {
         let b = (h as f32 / image_config.height as f32 * 255.5) as u8;
         image::Rgb([r, g, b])
     });
-    img.save("pic.png").unwrap();
+    img.save(args.save_path).unwrap();
 }
 
