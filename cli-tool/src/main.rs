@@ -87,7 +87,7 @@ fn main() {
     let img = image::ImageBuffer::from_fn(image_config.width as u32, image_config.height as u32, |w, h| {
         let grid_coordinate = pixel_to_grid_coordinate(&PixelCoordinate { width: w as usize, height: h as usize}, &image_config, &grid_config);
         let initial_z = Complex::<Real>::new( grid_coordinate.x, grid_coordinate.y);
-        let value = julia_fractal::julia_iterations(constant_z, initial_z, max_iterations);
+        let value = julia_fractal::julia_iterations(initial_z, constant_z, max_iterations);
         let g = iter_to_u8(value);
         let r = (w as f32 / image_config.width as f32 * 255.5) as u8;
         let b = (h as f32 / image_config.height as f32 * 255.5) as u8;
