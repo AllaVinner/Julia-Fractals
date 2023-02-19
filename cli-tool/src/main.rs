@@ -71,7 +71,7 @@ struct Args {
    max_iterations: usize
 }
 
-fn main() {
+fn main2() {
     let args: Args = Args::parse();
     let grid_config = GridConfig { x_min: args.real_min, x_max: args.real_max, y_min: args.imag_min, y_max: args.imag_max};
     let image_config = ImageConfig { width: args.image_width, height: args.image_height};
